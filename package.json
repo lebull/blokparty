@@ -2,6 +2,18 @@
   "name": "blokparty",
   "version": "0.1.0",
   "private": true,
+  "homepage": "./",
+  "main": "./electron/main.js",
+  "build": {
+    "appId": "blokparty",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
@@ -10,6 +22,8 @@
     "@types/node": "^12.19.16",
     "@types/react": "^17.0.1",
     "@types/react-dom": "^17.0.0",
+    "concurrently": "^5.3.0",
+    "node-sass": "^4.14.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.2",
@@ -20,7 +34,13 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "electron-start": "electron .",
+    "preelectron-pack": "npm run build",
+    "electron-pack": "electron-builder -c.extraMetadata.main=./build/main.js",
+    "dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "eslintConfig": {
     "extends": [
@@ -39,5 +59,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "electron": "^11.2.3",
+    "electron-builder": "^22.9.1"
   }
 }
