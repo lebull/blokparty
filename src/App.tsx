@@ -4,7 +4,7 @@ import './App.css';
 import Buttplug from "./components/buttplug/Buttplug";
 import MusicAnalyzer, { IAnalysisFrame } from './components/music/MusicAnalyzer';
 
-const BUTTPLUG_UPDATE_FPS = 15;
+const BUTTPLUG_UPDATE_FPS = 24;
 
 function App() {
 

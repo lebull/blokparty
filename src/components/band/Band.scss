@@ -1,21 +1,44 @@
 .bands{
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     min-height: 200px;
 }
 
 .band{
     display: flex;
     flex-grow: 1;
-    margin: 0 .2em;
+    display: block;
     background-color: green;
 
-    .background{
+    // .background{
         
+    // }
+
+    .negativeBackground-wrapper{
+        height: 100%;
     }
     .negativeBackground{
-        display: flex;
+        position: relative;
         flex-grow: 1;
         background-color: #111134;
+    }
+
+    .band-slider {
+        position: relative;
+        top: -100%;
+        width: 100%;
+        height: 100%;
+        .band-thumb {
+            width: 100%;
+            background-color: #AAA;
+            height: 10px;
+        }
+    }
+
+    //Bottom track
+    .band-track.band-track-0 {
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.3);
     }
 }

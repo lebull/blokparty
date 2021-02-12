@@ -6,6 +6,7 @@ import { IAnalysisFrame } from "../music/MusicAnalyzer";
 interface IConnectedDeviceFeature {
     index: number,
     setIntensity: Function,
+    lastIntensity: number,
 }
 
 interface IConnectedDevice {
@@ -47,6 +48,7 @@ const Buttplug = ({frame} : IButtplugProps) => {
             const features = new Array(featureCount).fill(null).map((_, index) => ({
                     index,
                     setIntensity: (intensity: number) => setFeatureIntensity(device, index, intensity),
+                    lastIntensity: 0,
                 } as IConnectedDeviceFeature)
             );
 
@@ -66,10 +68,9 @@ const Buttplug = ({frame} : IButtplugProps) => {
     }
 
     useEffect(()=>{
-        if(connectedDevices[0]){
-            if(frame){
-                setFeatureIntensity(connectedDevices[0], 0, Math.min(frame.beatEnergy, 1));
-            }
+        if(frame && connectedDevices[0]){
+            const intensity = (Math.round((frame.beatEnergy * 0.5 + frame.totalAmplitude*0.5) * 10)/10);
+            setFeatureIntensity(connectedDevices[0], 0, Math.max(Math.min(intensity, 1), 0));
         }
     }, [frame, connectedDevices])
 
@@ -80,7 +81,13 @@ const Buttplug = ({frame} : IButtplugProps) => {
     }
 
     const setFeatureIntensity = (connectedDevice: IConnectedDevice, featureIndex: number, intensity: number) => {
-        return connectedDevice.device.vibrate([ new ButtplugIO.VibrationCmd(featureIndex, intensity) ]);
+        
+        const lastIntensity = connectedDevice.features[featureIndex].lastIntensity;
+        if(lastIntensity !== intensity){
+            console.log(`Vib: ${intensity}`);
+            connectedDevice.features[featureIndex].lastIntensity = intensity;
+            connectedDevice.device.vibrate([ new ButtplugIO.VibrationCmd(featureIndex, intensity) ]);
+        }
     }
 
     useEffect(() => {

@@ -14,42 +14,15 @@ export class AudioStream {
     public playing = false;
     public output = 0;
 
+    public gain : number = 20;
+
     private _source: MediaStreamAudioSourceNode | null = null; // eventual stream source
     private _audioContext = new AudioContext();
     private _analyser = this._audioContext.createAnalyser();
     private _data: Uint8Array = new Uint8Array(); // final audio data in the standard format
 
     public init(): void {
-        // // subscribe to audio device play/stop
-        // this.syncService.audioStreamActive().pipe(
-        //     takeUntil(this._ngUnsubscribe)
-        // ).subscribe((res: any) => {
-        //     this.playing = res;
-        //     if (!res) {
-        //         clearInterval(this._intervalID);
-        //         this.playing = false;
-        //     }
 
-        // });
-
-        // subscribe to audio device selection (the select dropdown in main nav)
-        // controlled by shared/components/audio-devices/
-        // this.syncService.getAudioDevice().pipe(
-        //     takeUntil(this._ngUnsubscribe)
-        // ).subscribe((res: any) => {
-        //     if (res) {
-        //         this._audioDeviceId = res;
-        //         this.play(this._audioDeviceId);
-        //     } else {
-        //         this.stop();
-        //     }
-        // });
-
-        // this.wasmService.getActiveBTDevices().pipe(
-        //     takeUntil(this._ngUnsubscribe)
-        // ).subscribe((res: any) => {
-        //     this._activeBTDevices = res;
-        // });
     }
     
     public connectStream(stream: MediaStream) {
@@ -65,33 +38,12 @@ export class AudioStream {
         this._source.connect(this._analyser);
 
         // setup the frequency labels for the bands
-        this.freqs = this.calcFreqs(this._analyser.context.sampleRate, this._analyser.fftSize);
+        this.freqs = this._calculateBandFrequencyRanges(this._analyser.context.sampleRate, this._analyser.fftSize);
 
         // set context.status: running
         this._audioContext.resume();
     }
 
-    /* ------------------------------------------------------------------------ *
-        https://github.com/buttplugio/buttplug-developer-guide/blob/master/examples/javascript/device-control-example.js
-        When sensitivity scores exist this method:
-        - Probably want to debounce this or turn down the times-per-second in frameLooper()
-        - Needs to know which band's values should be used
-        - Needs to know if the haptic has multiple engines
-        - Needs to know which band's values should be used for each haptic engine
-    * ------------------------------------------------------------------------ */
-    // private async sensitivityRequest(): Promise<any> {
-    //     const max = Math.max.apply(Math, this.bands.map(function(o) { return o.peak; })) / 100;
-    //     if (max !== this._maxPeak) {
-    //         this._maxPeak = max;
-    //         this.output = this._maxPeak;
-    //     } else {
-    //         for ( let i = 0, j = this.bands.length; i < j; i++ ) {
-    //             this.bands[i].peak = 0;
-    //         }
-    //     }
-    // }
-
-    // Control the view
     public tick() {
         this.tickNum += 1;
         if(!this._source){
@@ -107,14 +59,18 @@ export class AudioStream {
         // calculate the height of each band element using frequency data
         for (var i = 0; i < this._analyser.frequencyBinCount; i++) {
             this.bands.push({
-                db: this._data[i],
+                db: this._data[i] + this.gain,
                 range: 0,
                 peak: 0,
             });
         }
     }
 
-    private calcFreqs(sampleRate: number, fftSize: number) {
+    public setGain(gain: number) : void {
+        this.gain = gain;
+    }
+
+    private _calculateBandFrequencyRanges(sampleRate: number, fftSize: number) {
         const bands = fftSize / 2; // bands are half the fftSize
         const fqBand = sampleRate / fftSize;
         
