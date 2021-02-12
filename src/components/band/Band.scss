@@ -1,8 +1,21 @@
-.band{
-    .background{
+.bands{
+    display: flex;
+    flex-direction: row;
+    min-height: 200px;
+}
 
+.band{
+    display: flex;
+    flex-grow: 1;
+    margin: 0 .2em;
+    background-color: green;
+
+    .background{
+        
     }
     .negativeBackground{
-
+        display: flex;
+        flex-grow: 1;
+        background-color: #111134;
     }
 }

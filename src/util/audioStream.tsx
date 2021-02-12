@@ -101,15 +101,16 @@ export class AudioStream {
         this._data = new Uint8Array(this._analyser.frequencyBinCount);
         this._analyser.getByteFrequencyData(this._data);
 
+
+        this.bands = [];
+
         // calculate the height of each band element using frequency data
         for (var i = 0; i < this._analyser.frequencyBinCount; i++) {
-            this.bands[i].db = this._data[i];
-            const rawDbPercent = parseInt(((this.bands[i].db / 255) * 100).toFixed());
-
-            // 3: calculate peak: how much db is peaking into the user-set range
-            if (this.bands[i].range < rawDbPercent) {
-                this.bands[i].peak = rawDbPercent - this.bands[i].range;
-            }
+            this.bands.push({
+                db: this._data[i],
+                range: 0,
+                peak: 0,
+            });
         }
     }
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as ButtplugIO from 'buttplug';
 import { ButtplugClient, ButtplugClientDevice } from "buttplug";
+import { IAnalysisFrame } from "../music/MusicAnalyzer";
 
 interface IConnectedDeviceFeature {
     index: number,
@@ -15,7 +16,11 @@ interface IConnectedDevice {
     features: Array<IConnectedDeviceFeature>,
 }
 
-const ButtplugComp = () => {
+interface IButtplugProps {
+    frame: IAnalysisFrame | undefined
+}
+
+const Buttplug = ({frame} : IButtplugProps) => {
 
     const [loaded, setLoaded] = useState(false);
 
@@ -59,6 +64,14 @@ const ButtplugComp = () => {
         client.addListener("deviceremoved", (device) => console.log(`Device Removed: ${device.Name}`));
         await client.startScanning();
     }
+
+    useEffect(()=>{
+        if(connectedDevices[0]){
+            if(frame){
+                setFeatureIntensity(connectedDevices[0], 0, Math.min(frame.beatEnergy, 1));
+            }
+        }
+    }, [frame, connectedDevices])
 
     const prodFeature = (connectedDevice: IConnectedDevice, featureIndex: number) => {
         const intensity = 0.5;
@@ -106,4 +119,4 @@ const ButtplugComp = () => {
     return <p>Loading...</p>
 }
 
-export default ButtplugComp;
+export default Buttplug;
