@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import * as ButtplugIO from 'buttplug';
 import { ButtplugClient, ButtplugClientDevice } from "buttplug";
-import { IAnalysisFrame, IThresholds } from "../music/MusicAnalyzer";
+import { IThresholds } from "../music/MusicAnalyzerWorker";
+import { IAnalysisFrame } from "../../util/musicAnalyzer";
 
 interface IConnectedDeviceFeature {
     index: number,

@@ -2,7 +2,8 @@ import useInterval from '@use-it/interval';
 import React, { useState } from 'react';
 import './App.css';
 import Buttplug from "./components/buttplug/Buttplug";
-import MusicAnalyzer, { IAnalysisFrame, IThresholds } from './components/music/MusicAnalyzer';
+import MusicAnalyzerWorker, { IThresholds } from './components/music/MusicAnalyzerWorker';
+import { IAnalysisFrame } from './util/musicAnalyzer';
 
 const BUTTPLUG_UPDATE_FPS = 12;
 
@@ -12,10 +13,12 @@ function App() {
   const [buttplugFrame, setButtplugFrame] = useState<IAnalysisFrame>();
 
   const [thresholds, setThresholds] = useState<IThresholds>({
+    gain: 0,
     totalAmplitude: 0,
     beatEnergy: 0,
   });
   const [buttplugThresholds, setButtplugThresholds] = useState<IThresholds>({
+    gain: 0,
     totalAmplitude: 0,
     beatEnergy: 0,
   });
@@ -29,7 +32,7 @@ function App() {
     <div className="App">
       <Buttplug frame={buttplugFrame} thresholds={buttplugThresholds}/>
       <hr />
-      <MusicAnalyzer 
+      <MusicAnalyzerWorker
         onFrameAdded={(frame: IAnalysisFrame) => setLatestFrame(frame)}
         onThresholdsUpdated={(thresholds: IThresholds) => setThresholds(thresholds)}
       />
