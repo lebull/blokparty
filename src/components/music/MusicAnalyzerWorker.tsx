@@ -1,11 +1,12 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { MusicAnalyzer, IAnalysisFrame } from '../../util/musicAnalyzer';
 import SettableBand from '../band/Band';
 import useInterval from '@use-it/interval';
 import "./musicAnalyzer.scss";
+import MusicAnalyzerContext from '../../contexts/AudioStreamContext';
 
 
-const audioStream = new MusicAnalyzer();
+// const audioStream = new MusicAnalyzer();
 const INTERVAL_FPS = 36;
 
 export interface IThresholds {
@@ -21,6 +22,8 @@ interface IMusicAnalyzerProps {
 
 
 function MusicAnalyzerWorker({ onFrameAdded, onThresholdsUpdated }: IMusicAnalyzerProps) {
+
+  const audioStream = useContext(MusicAnalyzerContext);
 
   const [currentAnalysisFrame, setCurrentAnalysisFrame] = useState<IAnalysisFrame>();
   const [thresholds, setThreasholds] = useState<IThresholds>({
@@ -39,7 +42,7 @@ function MusicAnalyzerWorker({ onFrameAdded, onThresholdsUpdated }: IMusicAnalyz
 
 
   if (!currentAnalysisFrame) {
-    return <AudioDevicePicker />
+    return <p>Waiting for audio device</p>
   }
 
   const onSetThreashold = (thresholdName: string, val: number) => {
@@ -54,8 +57,6 @@ function MusicAnalyzerWorker({ onFrameAdded, onThresholdsUpdated }: IMusicAnalyz
   
   return (
     <div>
-      <AudioDevicePicker />
-
       <div className="analyzerControlPanel">
         <div className="controls">
           <div>
@@ -97,15 +98,14 @@ function MusicAnalyzerWorker({ onFrameAdded, onThresholdsUpdated }: IMusicAnalyz
   );
 }
 
-export default MusicAnalyzerWorker;
-
-
 
 interface IAudioDevicePickerProps{
   onAudioDeviceSelected?: Function,
 }
 
 const AudioDevicePicker = ({onAudioDeviceSelected}: IAudioDevicePickerProps) => {
+
+  const audioStream = useContext(MusicAnalyzerContext);
 
   const [selectedDevice, setSelectedDeviceState] = useState<MediaDeviceInfo|undefined>();
   const setSelectedDevice = (selectedDevice: MediaDeviceInfo | undefined) => {
@@ -116,8 +116,6 @@ const AudioDevicePicker = ({onAudioDeviceSelected}: IAudioDevicePickerProps) => 
   }
   
   const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[]>([]);
-
-
 
   useEffect(() => {
     refreshAudioDevices();
@@ -156,3 +154,6 @@ const AudioDevicePicker = ({onAudioDeviceSelected}: IAudioDevicePickerProps) => 
       </select>
   </div>
 }
+
+
+export { MusicAnalyzerWorker, AudioDevicePicker };

@@ -1,8 +1,10 @@
 import useInterval from '@use-it/interval';
 import React, { useState } from 'react';
 import './App.css';
-import Buttplug from "./components/buttplug/Buttplug";
-import MusicAnalyzerWorker, { IThresholds } from './components/music/MusicAnalyzerWorker';
+import { ButtplugConnectedDeviceList } from "./components/buttplug/Buttplug";
+import { MusicAnalyzerWorker, IThresholds } from './components/music/MusicAnalyzerWorker';
+import { ButtplugContextProvider } from './contexts/ButtplugContext';
+import Navbar from './layout/navbar';
 import { IAnalysisFrame } from './util/musicAnalyzer';
 
 const BUTTPLUG_UPDATE_FPS = 12;
@@ -23,21 +25,22 @@ function App() {
     beatEnergy: 0,
   });
 
-  useInterval(()=>{
+  useInterval(() => {
     setButtplugFrame(lastFrame);
     setButtplugThresholds(thresholds);
-  }, 1000/BUTTPLUG_UPDATE_FPS);
+  }, 1000 / BUTTPLUG_UPDATE_FPS);
 
   return (
     <div className="App">
-      <Buttplug frame={buttplugFrame} thresholds={buttplugThresholds}/>
-      <hr />
-      <MusicAnalyzerWorker
-        onFrameAdded={(frame: IAnalysisFrame) => setLatestFrame(frame)}
-        onThresholdsUpdated={(thresholds: IThresholds) => setThresholds(thresholds)}
-      />
-
-
+      <ButtplugContextProvider>
+        <Navbar />
+        <ButtplugConnectedDeviceList frame={buttplugFrame} thresholds={buttplugThresholds} />
+        <hr />
+        <MusicAnalyzerWorker
+          onFrameAdded={(frame: IAnalysisFrame) => setLatestFrame(frame)}
+          onThresholdsUpdated={(thresholds: IThresholds) => setThresholds(thresholds)}
+        />
+      </ButtplugContextProvider>
     </div>
   );
 }
