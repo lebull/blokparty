@@ -9,7 +9,7 @@ interface IButtplugProps {
     thresholds: IThresholds
 }
 
-export const ButtplugConnectedDeviceList = ({frame, thresholds} : IButtplugProps) => {
+export const ButtplugToMusicWorker = ({frame, thresholds} : IButtplugProps) => {
 
     const { buttplugClient, connectedButtplugs } = useContext(ButtplugContext);
 
@@ -18,7 +18,15 @@ export const ButtplugConnectedDeviceList = ({frame, thresholds} : IButtplugProps
             const intensity = (Math.round((frame.beatEnergy * thresholds.beatEnergy + frame.totalAmplitude*thresholds.totalAmplitude) * 10)/10);
             setFeatureIntensity(connectedButtplugs[0], 0, Math.max(Math.min(intensity, 1), 0));
         }
-    }, [frame, thresholds, connectedButtplugs])
+    }, [frame, thresholds, connectedButtplugs]);
+
+    return <div>0.00</div>;
+
+}
+
+export const ButtplugConnectedDeviceList = () => {
+
+    const { buttplugClient, connectedButtplugs } = useContext(ButtplugContext);
 
     if (buttplugClient) {
         return (

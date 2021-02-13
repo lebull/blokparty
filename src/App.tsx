@@ -1,7 +1,7 @@
 import useInterval from '@use-it/interval';
 import React, { useState } from 'react';
 import './App.css';
-import { ButtplugConnectedDeviceList } from "./components/buttplug/Buttplug";
+import { ButtplugConnectedDeviceList, ButtplugToMusicWorker } from "./components/buttplug/Buttplug";
 import { MusicAnalyzerWorker, IThresholds } from './components/music/MusicAnalyzerWorker';
 import { ButtplugContextProvider } from './contexts/ButtplugContext';
 import Navbar from './layout/navbar';
@@ -34,12 +34,13 @@ function App() {
     <div className="App">
       <ButtplugContextProvider>
         <Navbar />
-        <ButtplugConnectedDeviceList frame={buttplugFrame} thresholds={buttplugThresholds} />
+        <ButtplugConnectedDeviceList/>
         <hr />
         <MusicAnalyzerWorker
           onFrameAdded={(frame: IAnalysisFrame) => setLatestFrame(frame)}
           onThresholdsUpdated={(thresholds: IThresholds) => setThresholds(thresholds)}
         />
+        <ButtplugToMusicWorker frame={buttplugFrame} thresholds={buttplugThresholds} /> {/* Does not render.  Do we need to do something else?*/}
       </ButtplugContextProvider>
     </div>
   );
