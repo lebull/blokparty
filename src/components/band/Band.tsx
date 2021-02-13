@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React from "react";
 import "./Band.scss";
 import ReactSlider from 'react-slider'
 
@@ -9,12 +9,7 @@ interface ISettableBandParams {
 
 const SettableBand = ({ outputValue, onInputValueSet }: ISettableBandParams) => {
 
-    const [value, setValue] = useState<number>();
-
-    const onSliderValueChange = ({value} : any) => {
-        // debugger;
-        onInputValueSet(value);
-    }
+    const onSliderValueChange = (value : any) => { onInputValueSet(value); }
 
     return (<div className="band">
         <div className="background"></div>

@@ -26,8 +26,10 @@ module.exports = function override(config, env) {
   config.module.rules.push({
     test: wasmExtensionRegExp,
     include: path.resolve(__dirname, 'src'),
-    use: [{ loader: require.resolve('wasm-loader'), options: {} }]
+    use: [{ loader: require.resolve('wasm-loader'), options: {} }],
   });
+
+  config.output.publicPath = "/build/";
 
   return config;
 };

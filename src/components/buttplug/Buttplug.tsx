@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as ButtplugIO from 'buttplug';
 import { ButtplugClient, ButtplugClientDevice } from "buttplug";
-import { IAnalysisFrame } from "../music/MusicAnalyzer";
+import { IAnalysisFrame, IThresholds } from "../music/MusicAnalyzer";
 
 interface IConnectedDeviceFeature {
     index: number,
@@ -18,10 +18,11 @@ interface IConnectedDevice {
 }
 
 interface IButtplugProps {
-    frame: IAnalysisFrame | undefined
+    frame: IAnalysisFrame | undefined,
+    thresholds: IThresholds
 }
 
-const Buttplug = ({frame} : IButtplugProps) => {
+const Buttplug = ({frame, thresholds} : IButtplugProps) => {
 
     const [loaded, setLoaded] = useState(false);
 
@@ -68,11 +69,12 @@ const Buttplug = ({frame} : IButtplugProps) => {
     }
 
     useEffect(()=>{
+        
         if(frame && connectedDevices[0]){
-            const intensity = (Math.round((frame.beatEnergy * 0.5 + frame.totalAmplitude*0.5) * 10)/10);
+            const intensity = (Math.round((frame.beatEnergy * thresholds.beatEnergy + frame.totalAmplitude*thresholds.totalAmplitude) * 10)/10);
             setFeatureIntensity(connectedDevices[0], 0, Math.max(Math.min(intensity, 1), 0));
         }
-    }, [frame, connectedDevices])
+    }, [frame, thresholds, connectedDevices])
 
     const prodFeature = (connectedDevice: IConnectedDevice, featureIndex: number) => {
         const intensity = 0.5;

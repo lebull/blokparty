@@ -1,0 +1,27 @@
+.analyzerControlPanel{
+    display: flex;
+    flex-direction: row;
+    .controls{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        min-height: 250px;
+
+        .band{
+            margin: 1em;
+            flex-grow: 1;
+            min-width: 50px;
+        }
+    }
+    .bands{
+        display: flex;
+        flex-grow: 1;
+    }
+}
+
+.bands{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
