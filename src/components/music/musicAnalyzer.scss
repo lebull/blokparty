@@ -34,3 +34,21 @@
         max-height: 200px;
     }
 }
+
+.addDevice{
+    text-align: center;
+    font-size: 24pt;
+    font-weight: 300;
+}
+
+
+.audioDeviceSelect{
+    padding: .6em .6em;
+    font-size: .6em;
+    cursor: pointer;
+
+    * {
+        cursor: pointer;
+    }
+
+}

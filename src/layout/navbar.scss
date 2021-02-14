@@ -9,7 +9,12 @@
         flex-grow: 1;
     }
 
-    .icon{
-        font-size: 24px;
+    .buttonIcon{
+        font-size: 32pt;
+        :hover{
+            cursor: pointer;
+            color: rgb(240, 250, 0);
+        }
+        
     }
 }

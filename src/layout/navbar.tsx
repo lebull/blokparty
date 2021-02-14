@@ -16,7 +16,7 @@ const Navbar = () => {
         {/* <ButtplugScanButton /> */}
         <span className="spacer" />
         {/* <AudioDevicePicker /> */}
-        <FontAwesomeIcon icon={faCog} className="icon" onClick={openModal}/>
+        <FontAwesomeIcon icon={faCog} className="buttonIcon" onClick={openModal}/>
         <SimpleModal isOpen={isModalOpen} close={closeModal} title={"Settings"}>
             <h2>Audio Device</h2>
             <AudioDevicePicker />

@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
-import { MusicAnalyzer, IAnalysisFrame } from '../../util/musicAnalyzer';
+import { IAnalysisFrame } from '../../util/musicAnalyzer';
 import SettableBand from '../band/Band';
 import useInterval from '@use-it/interval';
 import "./musicAnalyzer.scss";
@@ -42,7 +42,11 @@ function MusicAnalyzerWorker({ onFrameAdded, onThresholdsUpdated }: IMusicAnalyz
 
 
   if (!currentAnalysisFrame) {
-    return <p>Waiting for audio device</p>
+    return <div className="addDevice">
+      <p>Select an Audio Device to Monitor</p>
+      <p>Stereo-Mix is Recommended</p>
+      <AudioDevicePicker />
+    </div>
   }
 
   const onSetThreashold = (thresholdName: string, val: number) => {
@@ -69,7 +73,7 @@ function MusicAnalyzerWorker({ onFrameAdded, onThresholdsUpdated }: IMusicAnalyz
             <div>Gain</div>
             <div>{thresholds.gain}</div>
           </div>
-          <div>
+          {/* <div>
             <SettableBand
               outputValue={currentAnalysisFrame.totalAmplitude}
               onInputValueSet={(val: number) => onSetThreashold("totalAmplitude", val)}
@@ -84,7 +88,7 @@ function MusicAnalyzerWorker({ onFrameAdded, onThresholdsUpdated }: IMusicAnalyz
             />
             <div>Beat</div>
             <div>{currentAnalysisFrame.beatEnergy.toFixed(2)}</div>
-          </div>
+          </div> */}
         </div>
         <div className="bands-wrapper">
           <div className="bands">
@@ -145,10 +149,7 @@ const AudioDevicePicker = ({onAudioDeviceSelected}: IAudioDevicePickerProps) => 
   }
 
   return <div>
-          <header className="App-header">
-        <h2>{selectedDevice?.label}</h2>
-      </header>
-      <select name="audioDevices" id="cars" onChange={onAudioDeviceSelectChange}>
+      <select className="audioDeviceSelect" name="audioDevices" id="cars" value={selectedDevice?.deviceId} onChange={onAudioDeviceSelectChange}>
         <option value="">(Select Audio Device)</option>
         {audioDevices.map((device, index) => <option key={index} value={device.deviceId}>{device.label}</option>)}
       </select>
