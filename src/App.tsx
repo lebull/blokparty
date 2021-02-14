@@ -35,7 +35,6 @@ function App() {
       <ButtplugContextProvider>
         <Navbar />
         <ButtplugConnectedDeviceList/>
-        <hr />
         <MusicAnalyzerWorker
           onFrameAdded={(frame: IAnalysisFrame) => setLatestFrame(frame)}
           onThresholdsUpdated={(thresholds: IThresholds) => setThresholds(thresholds)}
