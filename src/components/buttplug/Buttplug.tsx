@@ -11,7 +11,7 @@ interface IButtplugProps {
 
 export const ButtplugToMusicWorker = ({frame, thresholds} : IButtplugProps) => {
 
-    const { buttplugClient, connectedButtplugs } = useContext(ButtplugContext);
+    const { connectedButtplugs } = useContext(ButtplugContext);
 
     useEffect(()=>{
         if(frame && connectedButtplugs[0]){
@@ -20,7 +20,7 @@ export const ButtplugToMusicWorker = ({frame, thresholds} : IButtplugProps) => {
         }
     }, [frame, thresholds, connectedButtplugs]);
 
-    return <div>0.00</div>;
+    return <></>;
 
 }
 
