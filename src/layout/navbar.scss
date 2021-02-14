@@ -1,0 +1,15 @@
+
+.navbar{
+    display: flex;
+    align-items: center;
+
+    padding: .5em 1em;
+
+    .spacer{
+        flex-grow: 1;
+    }
+
+    .icon{
+        font-size: 24px;
+    }
+}
