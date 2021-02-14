@@ -34,12 +34,12 @@ function App() {
     <div className="App">
       <ButtplugContextProvider>
         <Navbar />
-        <ButtplugConnectedDeviceList/>
         <MusicAnalyzerWorker
           onFrameAdded={(frame: IAnalysisFrame) => setLatestFrame(frame)}
           onThresholdsUpdated={(thresholds: IThresholds) => setThresholds(thresholds)}
         />
         <ButtplugToMusicWorker frame={buttplugFrame} thresholds={buttplugThresholds} /> {/* Does not render.  Do we need to do something else?*/}
+        <ButtplugConnectedDeviceList />
       </ButtplugContextProvider>
     </div>
   );

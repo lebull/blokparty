@@ -69,9 +69,10 @@ function MusicAnalyzerWorker({ onFrameAdded, onThresholdsUpdated }: IMusicAnalyz
               max={4}
               outputValue={thresholds.gain}
               onInputValueSet={(val: number) => onSetThreashold("gain", val)}
+              orientation="vertical"
             />
-            <div>Gain</div>
-            <div>{thresholds.gain}</div>
+            {/* <div>Gain</div>
+            <div>{thresholds.gain}</div> */}
           </div>
           {/* <div>
             <SettableBand
@@ -93,7 +94,7 @@ function MusicAnalyzerWorker({ onFrameAdded, onThresholdsUpdated }: IMusicAnalyz
         <div className="bands-wrapper">
           <div className="bands">
             {Array.from(currentAnalysisFrame.fftTable).map((bandValue: number) => (
-              <SettableBand outputValue={bandValue/255} />
+              <SettableBand outputValue={bandValue/255} orientation="vertical"/>
             ))}
           </div>
         </div>

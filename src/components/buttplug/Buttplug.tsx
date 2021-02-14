@@ -1,8 +1,17 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { IThresholds } from "../music/MusicAnalyzerWorker";
 import { IAnalysisFrame } from "../../util/musicAnalyzer";
-import { prodFeature, setFeatureIntensity } from "../../util/buttplugHelpers";
+import { IConnectedDevice, prodFeature, setFeatureIntensity } from "../../util/buttplugHelpers";
 import { ButtplugContext } from "../../contexts/ButtplugContext";
+import ReactSlider from "react-slider";
+import SettableBand from "../band/Band";
+
+import "./Buttplug.scss";
+
+interface IFeatureIntensity {
+    beatEnergy: number,
+    totalAmplitude: number,
+}
 
 interface IButtplugProps {
     frame: IAnalysisFrame | undefined,
@@ -24,26 +33,73 @@ export const ButtplugToMusicWorker = ({frame, thresholds} : IButtplugProps) => {
 
 }
 
+interface IButtplugConnectedDeviceProps{
+    device: IConnectedDevice
+}
+const ButtplugConnectedDevice = ({device} : IButtplugConnectedDeviceProps) => {
+
+    const [intensities, setIntensities] = useState<IFeatureIntensity[]>([])
+
+    useEffect(()=>{
+        setIntensities(device.features.map((feature) => {
+            return {
+                beatEnergy: 0,
+                totalAmplitude: 0,
+            } as IFeatureIntensity
+        }))
+    }, [device])
+
+    const updateIntensity = (featureIndex: number, intensityType: string, intensityValue: number) => {
+        const newIntensities = [...intensities];
+        if(intensityType === "beatEnergy"){
+            newIntensities[featureIndex].beatEnergy = intensityValue;
+        }
+        if(intensityType === "totalAmplitude"){
+            newIntensities[featureIndex].totalAmplitude = intensityValue;
+        }
+        
+        setIntensities(newIntensities);
+    };
+
+    return(<div className="buttplugDevice">
+        <h2>{device.device.Name}</h2>
+        <div className="featureList">
+            {intensities.map((featureIntensity, featureIndex) => 
+                <div className="feature">
+                    <h3>Amp</h3>
+                    <SettableBand outputValue={featureIntensity.totalAmplitude} onInputValueSet={(value: any) => {updateIntensity(featureIndex, "totalAmplitude", value)}} />
+                    <h3>BeatEnergy</h3>
+                    <SettableBand outputValue={featureIntensity.beatEnergy} onInputValueSet={(value: any) => {updateIntensity(featureIndex, "beatEnergy", value)}}  />
+                    <div>
+                        <button onClick={()=> prodFeature(device, featureIndex)}>Prod Feature</button>
+                    </div>
+                </div>
+            )}
+        </div>
+    </div>);
+}
+
 export const ButtplugConnectedDeviceList = () => {
 
     const { buttplugClient, connectedButtplugs } = useContext(ButtplugContext);
 
     if (buttplugClient) {
         return (
-            <div>{
-                connectedButtplugs.map(( connectedDevice ) => (
-                    <div key={`device:${connectedDevice.device.Index}`}>
-                        <h3>{connectedDevice.device.Name}</h3>
-                        { connectedDevice.features.map((feature) => (
-                            <button key={feature.index} onClick={() => prodFeature(connectedDevice, feature.index)}>Prod</button>
-                        ))}
-                    </div>
-                ))
-            }</div>
+            <div>
+                <div>{
+                    connectedButtplugs.map(( connectedDevice ) => <ButtplugConnectedDevice device={connectedDevice} />
+                    )
+                }</div>
+                <div>
+                    <ButtplugScanButton />
+                </div>
+            </div>
         );
     }
 
-    return <p>Loading...</p>
+    return (<div>
+        <ButtplugScanButton />
+    </div>);
 }
 
 export const ButtplugScanButton = () => {
@@ -51,7 +107,7 @@ export const ButtplugScanButton = () => {
     const { buttplugClient, buttplugScan } = useContext(ButtplugContext);
 
     if (buttplugClient) {
-        return (<button onClick={buttplugScan}>Scan</button>);
+        return (<button onClick={buttplugScan}>Add Device</button>);
     }
 
     return <p>Loading...</p>
