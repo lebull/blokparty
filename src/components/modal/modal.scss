@@ -1,0 +1,43 @@
+.modal--overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    inset: 0px;
+}
+
+.modal--base-content {
+    background-color: #222233;
+    color: #F8F8F8;
+
+    .content {
+        padding: 0em 3em 3em 3em;
+        max-width: 600px;
+    }
+    
+    .topContent{
+        display: flex;
+   
+        padding: .4em .6em;
+
+
+        .title{
+            margin: 0;
+            font-size: 14pt;
+        }
+
+        .spacer{
+            flex-grow: 1;
+        }
+
+        .closeButton{
+            cursor: pointer;
+            font-size: 24pt;
+        }
+    }
+
+
+    
+}
