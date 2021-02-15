@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { AudioDevicePicker } from "../components/music/MusicAnalyzerWorker";
 import "./navbar.scss";
 import { SimpleModal } from "../components/modal/modal";
-import { AppBar, IconButton, Toolbar } from "@material-ui/core";
+import { AppBar, IconButton, Toolbar, Box, Typography } from "@material-ui/core";
 import SettingsIcon from '@material-ui/icons/Settings';
 
 
@@ -11,14 +11,16 @@ const Navbar = () => {
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
     return (<>
-    <AppBar position="static">
-        <Toolbar>
-            <IconButton color="inherit" size="medium" aria-label="settings" onClick={openModal}>
-                <SettingsIcon />
-            </IconButton>
-        </Toolbar>
-    </AppBar>
-    <SettingsModal isOpen={isModalOpen} close={closeModal}/>
+        <AppBar position="static">
+            <Toolbar>
+                <Typography variant="h6">ButtplugParty</Typography>
+                <Box display='flex' flexGrow={1} />
+                {/* <IconButton color="inherit" size="medium" aria-label="settings" onClick={openModal}>
+                    <SettingsIcon />
+                </IconButton> */}
+            </Toolbar>
+        </AppBar>
+        <SettingsModal isOpen={isModalOpen} close={closeModal} />
     </>);
 }
 
