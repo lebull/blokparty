@@ -1,3 +1,4 @@
+import { Container } from '@material-ui/core';
 import React from 'react';
 import './App.css';
 import { ButtplugConnectedDeviceList } from "./components/buttplug/Buttplug";
@@ -11,8 +12,10 @@ function App() {
     <div className="App">
       <ButtplugContextProvider>
         <Navbar />
-        <MusicAnalyzerWorker />
-        <ButtplugConnectedDeviceList />
+        <Container>
+          <MusicAnalyzerWorker />
+          <ButtplugConnectedDeviceList />
+        </Container>
       </ButtplugContextProvider>
     </div>
   );

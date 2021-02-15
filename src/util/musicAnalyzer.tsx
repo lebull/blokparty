@@ -1,4 +1,4 @@
-const FFT_BUCKET_COUNT = 64;
+const FFT_BUCKET_COUNT = 16;
 
 export interface IAnalysisFrame {
     fftTable: Uint8Array;
@@ -76,7 +76,7 @@ export class MusicAnalyzer {
             if (!previousFrame || previousFrame.fftTable.length === 0) {
                 return 0;
             }
-            const numberOfBars = previousFrame.fftTable.length;
+            const numberOfBars = currentAnalysisFrame.fftTable.length;
             totalAmplitude += (currentFrameBucketFrequency / numberOfBars);
         });
 
