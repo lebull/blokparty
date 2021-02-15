@@ -1,6 +1,4 @@
 import React, { useEffect, useContext, useState } from "react";
-import { IThresholds } from "../music/MusicAnalyzerWorker";
-import { IAnalysisFrame } from "../../util/musicAnalyzer";
 import { IConnectedDevice, prodFeature, setFeatureIntensity } from "../../util/buttplugHelpers";
 import { ButtplugContext } from "../../contexts/ButtplugContext";
 import { SettableBand } from "../band/Band";
@@ -12,25 +10,6 @@ interface IFeatureIntensity {
     beatEnergy: number,
     totalAmplitude: number,
 }
-
-// interface IButtplugProps {
-//     frame: IAnalysisFrame | undefined,
-// }
-
-// export const ButtplugToMusicWorker = ({frame} : IButtplugProps) => {
-
-//     const { connectedButtplugs } = useContext(ButtplugContext);
-
-//     useEffect(()=>{
-//         if(frame && connectedButtplugs[0]){
-//             const intensity = (Math.round((frame.beatEnergy * thresholds.beatEnergy + frame.totalAmplitude*thresholds.totalAmplitude) * 10)/10);
-//             setFeatureIntensity(connectedButtplugs[0], 0, Math.max(Math.min(intensity, 1), 0));
-//         }
-//     }, [frame, thresholds, connectedButtplugs]);
-
-//     return <></>;
-
-// }
 
 interface IButtplugConnectedDeviceProps{
     device: IConnectedDevice
@@ -74,10 +53,6 @@ const ButtplugConnectedDevice = ({device} : IButtplugConnectedDeviceProps) => {
             featureIndex,
             newIntensity,
         )
-        // feature.setIntensity(
-        //     analysisFrame.beatEnergy * intensities[featureIndex].beatEnergy
-        //     + analysisFrame.totalAmplitude * intensities[featureIndex].totalAmplitude
-        // );
     })
 
 

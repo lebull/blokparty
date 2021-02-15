@@ -63,7 +63,10 @@ export const ButtplugContextProvider = ({children} : any) => {
                 } as IConnectedDevice
             ]);
         });
-        buttplugClient.addListener("deviceremoved", (device) => console.log(`Device Removed: ${device.Name}`));
+        buttplugClient.addListener("deviceremoved", (device) => {
+            setConnectedButtplugs([...connectedButtplugs.filter(connectedDevice => connectedDevice.device !== device)]);
+            console.log(`Device Removed: ${device.Name}`);
+        });
         await buttplugClient.startScanning();
     }
 

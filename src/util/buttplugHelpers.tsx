@@ -28,14 +28,14 @@ export const prodFeature = (connectedDevice: IConnectedDevice, featureIndex: num
 
 export const setFeatureIntensity = (connectedDevice: IConnectedDevice, featureIndex: number, intensity: number) => {
     const feature =  connectedDevice.features[featureIndex];
-    intensity = Math.max(Math.min(Math.round(intensity * 10)/10, 1), 0);
     const currentTime = new Date().getTime();
     feature.intensityQueue = [intensity, ...feature.intensityQueue].slice(0, 100);
-    const newIntensity =  Math.max(...feature.intensityQueue);
+    let newIntensity =  feature.intensityQueue.reduce((avg, intensity) => avg + intensity/feature.intensityQueue.length);
+    newIntensity = Math.min(Math.round(newIntensity * 10)/10, 1);
 
     if(newIntensity !== feature.lastIntensity && (currentTime - feature.lastIntensityTime > 1000/12)){
-        console.log(`Vib: ${intensity}`);
-        connectedDevice.features[featureIndex].lastIntensity = intensity;
+        console.log(`Vib: ${newIntensity}`);
+        connectedDevice.features[featureIndex].lastIntensity = newIntensity;
         connectedDevice.device.vibrate([ new Buttplug.VibrationCmd(featureIndex, newIntensity) ]);
         feature.intensityQueue = [];
         feature.lastIntensityTime = currentTime;
