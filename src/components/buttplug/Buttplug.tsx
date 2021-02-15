@@ -45,7 +45,7 @@ const ButtplugConnectedDevice = ({device} : IButtplugConnectedDeviceProps) => {
     //This is dirty, literally calling updates to the device from the rendering of this element.
     //Also, let's try to make a method for setIntensity on a IConnectedDeviceFeature.  I think it's NYI
     device.features.forEach((feature, featureIndex) => {
-        if(intensities.length === 0) return;
+        if(intensities.length === 0 || !analysisFrame) return;
         const newIntensity = analysisFrame.beatEnergy * intensities[featureIndex].beatEnergy
             + analysisFrame.totalAmplitude * intensities[featureIndex].totalAmplitude
         setFeatureIntensity(
@@ -61,13 +61,20 @@ const ButtplugConnectedDevice = ({device} : IButtplugConnectedDeviceProps) => {
         <div className="featureList">
             {intensities.map((_, featureIndex) => 
                 <div className="feature">
-                    <h3>Amp</h3>
-                    <SettableBand outputValue={musicAnalyzer.getAnalysisFrame().totalAmplitude} onInputValueSet={(value: any) => {updateIntensity(featureIndex, "totalAmplitude", value)}} />
-                    <h3>BeatEnergy</h3>
-                    <SettableBand outputValue={musicAnalyzer.getAnalysisFrame().beatEnergy} onInputValueSet={(value: any) => {updateIntensity(featureIndex, "beatEnergy", value)}}  />
-                    <div>
-                        <button onClick={()=> prodFeature(device, featureIndex)}>Prod Feature</button>
-                    </div>
+                    { analysisFrame ?
+                        <div>
+                            <h3>Amp</h3>
+                            <SettableBand outputValue={musicAnalyzer.getAnalysisFrame().totalAmplitude} onInputValueSet={(value: any) => {updateIntensity(featureIndex, "totalAmplitude", value)}} />
+                            <h3>BeatEnergy</h3>
+                            <SettableBand outputValue={musicAnalyzer.getAnalysisFrame().beatEnergy} onInputValueSet={(value: any) => {updateIntensity(featureIndex, "beatEnergy", value)}}  />
+                            <div>
+                                <button onClick={()=> prodFeature(device, featureIndex)}>Prod Feature</button>
+                            </div>
+                        </div>
+                        :
+                        <div><p>Waiting for Audio</p></div>
+                    }
+
                 </div>
             )}
         </div>
