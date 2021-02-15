@@ -47,6 +47,8 @@ export const ButtplugContextProvider = ({children} : any) => {
                     index,
                     setIntensity: (intensity: number) => setFeatureIntensity(device, index, intensity),
                     lastIntensity: 0,
+                    intensityQueue: [],
+                    lastIntensityTime: new Date().getTime(),
                 } as IConnectedDeviceFeature)
             );
 

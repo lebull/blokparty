@@ -3,21 +3,44 @@ import "./Band.scss";
 import ReactSlider from 'react-slider'
 
 
-interface ISettableBandParams {
-    outputValue: number;
-    onInputValueSet?: Function;
-    min?: number;
-    max?: number;
-    orientation?: "horizontal" | "vertical";
+interface ISettableBandParams extends IIndicatorBand {
+    onInputValueSet: Function;
+    defaultValue?: number;
 }
 
-const SettableBand = ({ outputValue, onInputValueSet, min=0, max=1, orientation="horizontal"}: ISettableBandParams) => {
+const SettableBand = ({ outputValue, onInputValueSet, min=0, max=1, orientation="horizontal", defaultValue=0}: ISettableBandParams) => {
 
     const onSliderValueChange = (value : any) => { 
         if(onInputValueSet){
             onInputValueSet(value);
         }
     }
+    return (<div className={`settableBand settableBand__${orientation}`}>
+        <IndicatorBand outputValue={outputValue} min={min} max={max} orientation={orientation} />
+        <ReactSlider
+            className={`slider slider__${orientation}`}
+            thumbClassName={`thumb`}
+            trackClassName={`track`}
+            defaultValue={defaultValue}
+            min={min}
+            max={max}
+            invert={orientation === "vertical"}
+            step={0.01}
+            onChange={onSliderValueChange}
+            orientation={orientation}
+            // renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
+        />
+    </div>)
+}
+
+interface IIndicatorBand{
+    outputValue: number;
+    min?: number;
+    max?: number;
+    orientation?: "horizontal" | "vertical";
+}
+
+const IndicatorBand = ({ outputValue, min=0, max=1, orientation="horizontal"}: IIndicatorBand) => {
     
     const getPercentHeight = (reverse : boolean = false) =>{
         const outputValueScales = ((outputValue - min) / (max-min));
@@ -27,8 +50,7 @@ const SettableBand = ({ outputValue, onInputValueSet, min=0, max=1, orientation=
         return (1 - outputValueScales) * 100;
     }
 
-    return (<div className={`band band--${orientation}`}>
-        
+    return (<div className={`band band__${orientation}`}>
             { orientation === "horizontal" ?
                 <div className="positiveBackground-wrapper">
                     <div className="positiveBackground" style={{ "width": `${getPercentHeight(true)}%` }}></div>
@@ -38,24 +60,7 @@ const SettableBand = ({ outputValue, onInputValueSet, min=0, max=1, orientation=
                     <div className="negativeBackground" style={{ "height": `${getPercentHeight()}%` }}></div>
                 </div>
             }
-            
-    
-        { onInputValueSet ? 
-            <ReactSlider
-                className={`band-slider band-slider--${orientation}`}
-                thumbClassName={`band-thumb band-thumb--${orientation}`}
-                trackClassName={`band-track band-track--${orientation}`}
-                defaultValue={0.9}
-                min={min}
-                max={max}
-                invert={orientation === "vertical"}
-                step={0.01}
-                onChange={onSliderValueChange}
-                orientation={orientation}
-                // renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
-            /> : ""
-        }
     </div>)
 }
 
-export default SettableBand;
+export { IndicatorBand, SettableBand }

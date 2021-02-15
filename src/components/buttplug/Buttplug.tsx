@@ -3,35 +3,34 @@ import { IThresholds } from "../music/MusicAnalyzerWorker";
 import { IAnalysisFrame } from "../../util/musicAnalyzer";
 import { IConnectedDevice, prodFeature, setFeatureIntensity } from "../../util/buttplugHelpers";
 import { ButtplugContext } from "../../contexts/ButtplugContext";
-import ReactSlider from "react-slider";
-import SettableBand from "../band/Band";
+import { SettableBand } from "../band/Band";
 
 import "./Buttplug.scss";
+import MusicAnalyzerContext from "../../contexts/AudioStreamContext";
 
 interface IFeatureIntensity {
     beatEnergy: number,
     totalAmplitude: number,
 }
 
-interface IButtplugProps {
-    frame: IAnalysisFrame | undefined,
-    thresholds: IThresholds
-}
+// interface IButtplugProps {
+//     frame: IAnalysisFrame | undefined,
+// }
 
-export const ButtplugToMusicWorker = ({frame, thresholds} : IButtplugProps) => {
+// export const ButtplugToMusicWorker = ({frame} : IButtplugProps) => {
 
-    const { connectedButtplugs } = useContext(ButtplugContext);
+//     const { connectedButtplugs } = useContext(ButtplugContext);
 
-    useEffect(()=>{
-        if(frame && connectedButtplugs[0]){
-            const intensity = (Math.round((frame.beatEnergy * thresholds.beatEnergy + frame.totalAmplitude*thresholds.totalAmplitude) * 10)/10);
-            setFeatureIntensity(connectedButtplugs[0], 0, Math.max(Math.min(intensity, 1), 0));
-        }
-    }, [frame, thresholds, connectedButtplugs]);
+//     useEffect(()=>{
+//         if(frame && connectedButtplugs[0]){
+//             const intensity = (Math.round((frame.beatEnergy * thresholds.beatEnergy + frame.totalAmplitude*thresholds.totalAmplitude) * 10)/10);
+//             setFeatureIntensity(connectedButtplugs[0], 0, Math.max(Math.min(intensity, 1), 0));
+//         }
+//     }, [frame, thresholds, connectedButtplugs]);
 
-    return <></>;
+//     return <></>;
 
-}
+// }
 
 interface IButtplugConnectedDeviceProps{
     device: IConnectedDevice
@@ -39,6 +38,9 @@ interface IButtplugConnectedDeviceProps{
 const ButtplugConnectedDevice = ({device} : IButtplugConnectedDeviceProps) => {
 
     const [intensities, setIntensities] = useState<IFeatureIntensity[]>([])
+    const musicAnalyzer = useContext(MusicAnalyzerContext);
+    // const { buttplugClient, connectedButtplugs } = useContext(ButtplugContext);
+    const analysisFrame = musicAnalyzer.getAnalysisFrame();
 
     useEffect(()=>{
         setIntensities(device.features.map((feature) => {
@@ -47,7 +49,7 @@ const ButtplugConnectedDevice = ({device} : IButtplugConnectedDeviceProps) => {
                 totalAmplitude: 0,
             } as IFeatureIntensity
         }))
-    }, [device])
+    }, [device]);
 
     const updateIntensity = (featureIndex: number, intensityType: string, intensityValue: number) => {
         const newIntensities = [...intensities];
@@ -57,19 +59,37 @@ const ButtplugConnectedDevice = ({device} : IButtplugConnectedDeviceProps) => {
         if(intensityType === "totalAmplitude"){
             newIntensities[featureIndex].totalAmplitude = intensityValue;
         }
-        
+
         setIntensities(newIntensities);
     };
+
+    //This is dirty, literally calling updates to the device from the rendering of this element.
+    //Also, let's try to make a method for setIntensity on a IConnectedDeviceFeature.  I think it's NYI
+    device.features.forEach((feature, featureIndex) => {
+        if(intensities.length === 0) return;
+        const newIntensity = analysisFrame.beatEnergy * intensities[featureIndex].beatEnergy
+            + analysisFrame.totalAmplitude * intensities[featureIndex].totalAmplitude
+        setFeatureIntensity(
+            device,
+            featureIndex,
+            newIntensity,
+        )
+        // feature.setIntensity(
+        //     analysisFrame.beatEnergy * intensities[featureIndex].beatEnergy
+        //     + analysisFrame.totalAmplitude * intensities[featureIndex].totalAmplitude
+        // );
+    })
+
 
     return(<div className="buttplugDevice">
         <h2>{device.device.Name}</h2>
         <div className="featureList">
-            {intensities.map((featureIntensity, featureIndex) => 
+            {intensities.map((_, featureIndex) => 
                 <div className="feature">
                     <h3>Amp</h3>
-                    <SettableBand outputValue={featureIntensity.totalAmplitude} onInputValueSet={(value: any) => {updateIntensity(featureIndex, "totalAmplitude", value)}} />
+                    <SettableBand outputValue={musicAnalyzer.getAnalysisFrame().totalAmplitude} onInputValueSet={(value: any) => {updateIntensity(featureIndex, "totalAmplitude", value)}} />
                     <h3>BeatEnergy</h3>
-                    <SettableBand outputValue={featureIntensity.beatEnergy} onInputValueSet={(value: any) => {updateIntensity(featureIndex, "beatEnergy", value)}}  />
+                    <SettableBand outputValue={musicAnalyzer.getAnalysisFrame().beatEnergy} onInputValueSet={(value: any) => {updateIntensity(featureIndex, "beatEnergy", value)}}  />
                     <div>
                         <button onClick={()=> prodFeature(device, featureIndex)}>Prod Feature</button>
                     </div>
@@ -82,6 +102,13 @@ const ButtplugConnectedDevice = ({device} : IButtplugConnectedDeviceProps) => {
 export const ButtplugConnectedDeviceList = () => {
 
     const { buttplugClient, connectedButtplugs } = useContext(ButtplugContext);
+
+
+    const [time, setTime] = useState(Date.now());
+
+    useEffect(() => {
+        setInterval(() => setTime(Date.now()), 1000/60);
+    }, []);
 
     if (buttplugClient) {
         return (

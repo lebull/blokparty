@@ -1,16 +1,17 @@
 
 .band{
-    // display: flex;
-    // flex-grow: 1;
+    display: flex;
+    flex-grow: 1;
 
 
-    &--horizontal{
-     
+    &__horizontal{
+        flex-direction: column;
         height: 50px;
     }
 
-    &--vertical{
+    &__vertical{
         height: 100%;
+        width: 50px;
     }
 
     .negativeBackground-wrapper{
@@ -18,7 +19,7 @@
         width: 100%;
         position:relative;
 
-        &--horizontal{
+        &__horizontal{
             flex-direction: row-reverse;
         }
         background-color: green;
@@ -34,7 +35,7 @@
         width: 100%;
         position:relative;
 
-        &--horizontal{
+        &__horizontal{
             flex-direction: row-reverse;
         }
 
@@ -45,33 +46,61 @@
         background-color: green;
         height: 100%;
     }
+}
 
 
-    .band-slider {
-        position: relative;
-        top: -100%;
-        width: 100%;
+.settableBand {
+    display: flex;
+    &__vertical{
         height: 100%;
-        .band-thumb {
-            
-            background-color: #AAA;
+        flex-direction: row;
+    }
 
-            &--vertical{
-                width: 100%;
-                height: 10px;
-            }
+    &__horizontal{
+        width: 100%;
+        flex-direction: column;
+    }
 
-            &--horizontal{
-                height: 100%;
-                width: 10px;
-            }
-            
+}
+
+
+.slider {
+
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+
+    .thumb {
+        background-color: #AAA;
+    }
+
+    .track {
+        background-color: rgba(0, 0, 0, 1);
+    }
+
+    &__vertical{
+        flex-direction: row;
+        width: 30px;
+        .thumb {
+            width: 100%;
+            height: 10px;
+        }
+        .track{
+            width: 5px;
         }
     }
 
-    //Bottom track
-    .band-track.band-track-0 {
-        width: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
+    &__horizontal{
+        flex-direction: column;
+        height: 30px;
+        .thumb {
+            height: 30px;
+            width: 10px;
+        }
+        .track{
+            height: 5px;
+        }
     }
 }
+
