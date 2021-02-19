@@ -121,7 +121,7 @@ export const ButtplugScanButton = () => {
     if (buttplugClient) {
         return (
         <Box display="flex" justifyContent="center">
-            <Button color="primary" variant="contained" onClick={buttplugScan} size="large">
+            <Button color="secondary" variant="contained" onClick={buttplugScan} size="large">
                 Add Device
             </Button>
         </Box>);
