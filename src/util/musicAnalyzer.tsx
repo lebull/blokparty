@@ -1,4 +1,4 @@
-const FFT_BUCKET_COUNT = 16;
+const FFT_BUCKET_COUNT = 32;
 
 export interface IAnalysisFrame {
     fftTable: Uint8Array;
@@ -87,15 +87,15 @@ export class MusicAnalyzer {
             }
             const numberOfBars = previousFrame.fftTable.length;
             const delta = currentFrameBucketFrequency - previousFrame.fftTable[i];
-            beatEnergyAvg += (delta / numberOfBars) * (totalAmplitude/25);
+            beatEnergyAvg += (delta / numberOfBars) * (totalAmplitude);
         });
 
-        beatEnergyAvg /= 16;
+        beatEnergyAvg = Math.min(beatEnergyAvg / 500, 1) ** 2;
 
         let fallingBeatEnergyLimit = 0;
         let fallingTotalAmplitudeLimit = 0;
         try {
-            fallingBeatEnergyLimit = previousFrame.beatEnergy - (expectedIntervalPeriodMs / 800);
+            fallingBeatEnergyLimit = previousFrame.beatEnergy - (expectedIntervalPeriodMs / 300);
             fallingTotalAmplitudeLimit = previousFrame.totalAmplitude - (expectedIntervalPeriodMs / 50);
         } catch {
             fallingBeatEnergyLimit = 0;

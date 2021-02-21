@@ -18,8 +18,6 @@ export interface IConnectedDeviceFeature {
     lastIntensityTime: number;
 }
 
-
-
 export const prodFeature = (connectedDevice: IConnectedDevice, featureIndex: number) => {
     const intensity = 0.5;
     setFeatureIntensity(connectedDevice, featureIndex, intensity);
@@ -30,8 +28,9 @@ export const setFeatureIntensity = (connectedDevice: IConnectedDevice, featureIn
     const feature =  connectedDevice.features[featureIndex];
     const currentTime = new Date().getTime();
     feature.intensityQueue = [intensity, ...feature.intensityQueue].slice(0, 100);
-    let newIntensity =  feature.intensityQueue.reduce((avg, intensity) => avg + intensity/feature.intensityQueue.length);
-    newIntensity = Math.min(Math.round(newIntensity * 10)/10, 1);
+    let newIntensity =  feature.intensityQueue.reduce((avg, intensity) => avg + intensity)/feature.intensityQueue.length;
+    // let newIntensity = Math.max(...feature.intensityQueue);
+    newIntensity = Math.min(Math.round(newIntensity * 20)/20, 1);
 
     if(newIntensity !== feature.lastIntensity && (currentTime - feature.lastIntensityTime > 1000/12)){
         console.log(`Vib: ${newIntensity}`);

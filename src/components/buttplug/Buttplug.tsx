@@ -47,8 +47,10 @@ const ButtplugConnectedDevice = ({ device }: IButtplugConnectedDeviceProps) => {
     //Also, let's try to make a method for setIntensity on a IConnectedDeviceFeature.  I think it's NYI
     device.features.forEach((feature, featureIndex) => {
         if (intensities.length === 0 || !analysisFrame) return;
-        const newIntensity = analysisFrame.beatEnergy * intensities[featureIndex].beatEnergy
-            + analysisFrame.totalAmplitude * intensities[featureIndex].totalAmplitude
+        const newIntensity = Math.max(
+            (analysisFrame.beatEnergy * intensities[featureIndex].beatEnergy)**2,
+            (analysisFrame.totalAmplitude * intensities[featureIndex].totalAmplitude),
+        )
         setFeatureIntensity(
             device,
             featureIndex,
@@ -76,7 +78,6 @@ const ButtplugConnectedDevice = ({ device }: IButtplugConnectedDeviceProps) => {
                             :
                             <div><p>Waiting for Audio</p></div>
                         }
-
                     </Box>
                 )}
             </Box>
