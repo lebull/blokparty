@@ -1,9 +1,7 @@
-import { Container, CssBaseline } from '@material-ui/core';
 import React from 'react';
+import { Container, CssBaseline } from '@material-ui/core';
 import './App.css';
-import { ButtplugConnectedDeviceList } from "./components/buttplug/Buttplug";
 import { MusicAnalyzerWorker } from './components/music/MusicAnalyzerWorker';
-import { ButtplugContextProvider } from './contexts/ButtplugContext';
 import Navbar from './layout/navbar';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
@@ -24,16 +22,13 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <ButtplugContextProvider>
         <CssBaseline />
         <div className="App">
           <Navbar />
           <Container>
             <MusicAnalyzerWorker />
-            <ButtplugConnectedDeviceList />
           </Container>
         </div>
-      </ButtplugContextProvider >
     </ThemeProvider>
   );
 }

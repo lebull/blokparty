@@ -1,11 +1,7 @@
 
 .navbar{
-    display: flex;
-    align-items: center;
-
-    padding: .5em 1em;
-
-    .spacer{
-        flex-grow: 1;
+    @media all and (display-mode: fullscreen) {
+        display: none;
+        visibility: hidden;
     }
 }

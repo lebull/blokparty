@@ -11,13 +11,13 @@ const Navbar = () => {
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
     return (<>
-        <AppBar position="static">
+        <AppBar className="navbar" position="static">
             <Toolbar>
-                <Typography variant="h6">ButtplugParty</Typography>
+                <Typography variant="h6">BleatPulse</Typography>
                 <Box display='flex' flexGrow={1} />
-                {/* <IconButton color="inherit" size="medium" aria-label="settings" onClick={openModal}>
+                <IconButton color="inherit" size="medium" aria-label="settings" onClick={openModal}>
                     <SettingsIcon />
-                </IconButton> */}
+                </IconButton>
             </Toolbar>
         </AppBar>
         <SettingsModal isOpen={isModalOpen} close={closeModal} />
